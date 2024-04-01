@@ -11,6 +11,7 @@ Imports ClientServerUsingNamedPipes.Server.PipeServer
 'Imports Newtonsoft.Json
 Imports System.Globalization
 Imports System.Windows.Forms.VisualStyles.VisualStyleElement
+Imports System.Security.Policy
 
 
 
@@ -42,10 +43,20 @@ Public Class Form1
     Dim SerialReadBuffers As New Dictionary(Of String, String)
     Dim _JSON As String
 
+    Dim FormWindowSizeLarge As Boolean
+
+
 
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+        FormWindowSizeLarge = False
+        Call setFormWindowSize()
+
         server = New ClientServerUsingNamedPipes.Server.PipeServer
+
+        server.setPipeName("fssimx") 'this requires the updated version, setPipeName added by upsidedown. otherwise the library is unchanged compared to the release from 'https://github.com/IfatChitin/Named-Pipes
+
         AddHandler server.MessageReceivedEvent, AddressOf eventHandler
 
         server.Start()
@@ -65,6 +76,10 @@ Public Class Form1
         TimerSerialUpdate.Start()
 
         Call SerialStartThread()
+
+        Dim ip As String = getIP()
+        lnkLabelServer.Text = "http://" & ip & ":25556"
+
 
     End Sub
 
@@ -179,22 +194,35 @@ Public Class Form1
     End Sub
 
     Private Sub UpdateSnapshot()
-        lstHeaders.Items.Clear()
-        If headerList.Count > 0 Then
-            For cnt = 0 To headerList.Count - 1
-                lstHeaders.Items.Add(headerList.Item(cnt))
+        Call UpdateList2Listbox(headerList, lstHeaders)
+        Call UpdateList2Listbox(bodyList, lstValues)
+
+
+    End Sub
+
+    Private Sub UpdateList2Listbox(lst As List(Of String), lbx As ListBox)
+        lbx.SuspendLayout()
+
+        If lst.Count > 0 Then
+            For cnt As Integer = 0 To lst.Count - 1
+                If lbx.Items.Count > cnt Then
+                    If lbx.Items(cnt) <> lst.Item(cnt) Then
+                        lbx.Items(cnt) = lst.Item(cnt)
+                    End If
+                Else
+                    lbx.Items.Add(lst.Item(cnt))
+                End If
             Next
         End If
 
-        lstValues.Items.Clear()
 
-        If bodyList.Count > 0 Then
-            For cnt = 0 To bodyList.Count - 1
-                lstValues.Items.Add(bodyList.Item(cnt))
-            Next
-        End If
+        While lbx.Items.Count > lst.Count
+            lbx.Items.RemoveAt(lbx.Items.Count - 1)
+        End While
 
-        Me.Update()
+        lbx.ResumeLayout()
+
+
     End Sub
 
 
@@ -215,6 +243,12 @@ Public Class Form1
 
 
     Private Sub btnJSON_Click(sender As Object, e As EventArgs) Handles btnJSON.Click
+        If Not FormWindowSizeLarge Then
+            FormWindowSizeLarge = True
+            Call setFormWindowSize()
+        End If
+
+
         txtJSON.Text = GetJSON()
     End Sub
 
@@ -271,14 +305,21 @@ Public Class Form1
             End SyncLock
         End SyncLock
 
-        _JSON = String.Copy(newStr)
+
+
+        _JSON = newStr.Clone
 
     End Sub
 
     Private Function GetJSON() As String
         Dim returnStr As String
         SyncLock _JSON
-            returnStr = String.Copy(_JSON)
+            Dim v As String
+#Disable Warning BC40000 ' Type or member is obsolete
+            v = String.Copy(_JSON)
+#Enable Warning BC40000 ' Type or member is obsolete
+            returnStr = v
+            'returnStr = _JSON.Clone
         End SyncLock
         Return returnStr
     End Function
@@ -325,13 +366,21 @@ Public Class Form1
 
 
     Private Sub ttSnapShot_Tick(sender As Object, e As EventArgs) Handles ttSnapShot.Tick
-        Call UpdateSnapshot()
+        If chkUpdateLists.Checked Then
+            lstHeaders.Visible = True
+            lstValues.Visible = True
+            Call UpdateSnapshot()
+        Else
+            lstHeaders.Visible = False
+            lstValues.Visible = False
+        End If
+
     End Sub
 
 
 
 
-    Private Sub btnRefreshCOMports_Click(sender As Object, e As EventArgs) Handles TimerSerialUpdate.Tick
+    Private Sub RefreshCOMports(sender As Object, e As EventArgs) Handles TimerSerialUpdate.Tick
         'clstCOMports.Items.Clear()
         objLock.AcquireWriterLock(Timeout.Infinite)
         For Each portName As String In IO.Ports.SerialPort.GetPortNames()
@@ -665,7 +714,68 @@ Public Class Form1
         ToolTipPortFilters.ToolTipTitle = "filter of: " & clstCOMports.SelectedItem
     End Sub
 
-    Private Sub clstCOMports_SelectedIndexChanged(sender As Object, e As EventArgs) Handles clstCOMports.SelectedIndexChanged
+    Private Sub btnNetworkSupport_Click(sender As Object, e As EventArgs) Handles btnNetworkSupport.Click
+        Dim wasVisible As Boolean
+
+        wasVisible = txtNetworkSetup.Visible
+
+        'netsh http add urlacl url=http://+:25556/ user=Jeder
+        'netsh advfirewall firewall add rule name= "Open Port L22 25556" dir=in action=allow protocol=TCP localport=25556
+
+        txtNetworkSetup.Text = "netsh http add urlacl url=http://+:25556/ user=Jeder" & System.Environment.NewLine
+        txtNetworkSetup.Text &= "netsh http add urlacl url=http://+:25556/ user=Everyone" & System.Environment.NewLine
+        txtNetworkSetup.Text &= "netsh advfirewall firewall add rule name= " & Chr(34) & "Open Port L22 25556" & Chr(34) & " dir=in action=allow protocol=TCP localport=25556"
+        txtNetworkSetup.Visible = Not wasVisible
+        lblNetWorkSetup.Visible = Not wasVisible
+
+
+
+    End Sub
+
+    Function getIP() As String
+        Dim host_name As String = Dns.GetHostName()
+        For Each ip As IPAddress In Dns.GetHostEntry(host_name).AddressList
+            If String.Equals(ip.AddressFamily().ToString, "InterNetwork") Then
+                Return ip.ToString()
+            End If
+        Next
+        Return ""
+    End Function
+
+    Private Sub bntFormSize_Click(sender As Object, e As EventArgs) Handles bntFormSize.Click
+        FormWindowSizeLarge = Not FormWindowSizeLarge
+        Call setFormWindowSize()
+
+    End Sub
+
+    Private Sub setFormWindowSize()
+        If FormWindowSizeLarge Then
+            Me.Size = New Size(1620, 1024)
+            chkUpdateLists.Visible = True
+            txtJSON.Visible = True
+            lstHeaders.Visible = True
+            lstValues.Visible = True
+
+        Else
+            Me.Size = New Size(690, 690)
+            chkUpdateLists.Visible = False
+            chkUpdateLists.Checked = False
+            txtJSON.Visible = False
+            lstHeaders.Visible = False
+            lstValues.Visible = False
+        End If
+
+    End Sub
+
+    Private Sub lnkLabelServer_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles lnkLabelServer.LinkClicked
+
+        Try
+            Dim NewProcess As Diagnostics.ProcessStartInfo = New Diagnostics.ProcessStartInfo(lnkLabelServer.Text)
+            NewProcess.UseShellExecute = True
+            Process.Start(NewProcess)
+        Catch ex As Exception
+            MsgBox(ex.Message)
+        End Try
 
     End Sub
 End Class

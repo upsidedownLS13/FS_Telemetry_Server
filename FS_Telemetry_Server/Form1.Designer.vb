@@ -38,6 +38,12 @@ Partial Class Form1
         clstCOMports = New CheckedListBox()
         TimerSerialUpdate = New Timer(components)
         ToolTipPortFilters = New ToolTip(components)
+        chkUpdateLists = New CheckBox()
+        btnNetworkSupport = New Button()
+        txtNetworkSetup = New TextBox()
+        lblNetWorkSetup = New Label()
+        bntFormSize = New Button()
+        lnkLabelServer = New LinkLabel()
         SuspendLayout()
         ' 
         ' txtOutput
@@ -45,7 +51,7 @@ Partial Class Form1
         txtOutput.Location = New Point(31, 55)
         txtOutput.Multiline = True
         txtOutput.Name = "txtOutput"
-        txtOutput.Size = New Size(719, 260)
+        txtOutput.Size = New Size(622, 260)
         txtOutput.TabIndex = 1
         ' 
         ' lblOutput
@@ -61,7 +67,7 @@ Partial Class Form1
         ' 
         lstHeaders.FormattingEnabled = True
         lstHeaders.ItemHeight = 15
-        lstHeaders.Location = New Point(793, 55)
+        lstHeaders.Location = New Point(1074, 37)
         lstHeaders.Name = "lstHeaders"
         lstHeaders.Size = New Size(217, 889)
         lstHeaders.TabIndex = 4
@@ -70,16 +76,16 @@ Partial Class Form1
         ' 
         lstValues.FormattingEnabled = True
         lstValues.ItemHeight = 15
-        lstValues.Location = New Point(1040, 55)
+        lstValues.Location = New Point(1321, 37)
         lstValues.Name = "lstValues"
         lstValues.Size = New Size(267, 889)
         lstValues.TabIndex = 4
         ' 
         ' btnExit
         ' 
-        btnExit.Location = New Point(630, 405)
+        btnExit.Location = New Point(348, 405)
         btnExit.Name = "btnExit"
-        btnExit.Size = New Size(120, 36)
+        btnExit.Size = New Size(133, 36)
         btnExit.TabIndex = 5
         btnExit.Text = "Exit"
         btnExit.UseVisualStyleBackColor = True
@@ -95,9 +101,9 @@ Partial Class Form1
         ' 
         ' btnPipeStop
         ' 
-        btnPipeStop.Location = New Point(630, 321)
+        btnPipeStop.Location = New Point(271, 321)
         btnPipeStop.Name = "btnPipeStop"
-        btnPipeStop.Size = New Size(120, 36)
+        btnPipeStop.Size = New Size(133, 36)
         btnPipeStop.TabIndex = 0
         btnPipeStop.Text = "Restart Connection"
         btnPipeStop.UseVisualStyleBackColor = True
@@ -115,7 +121,7 @@ Partial Class Form1
         ' lblConnectStatus
         ' 
         lblConnectStatus.AutoSize = True
-        lblConnectStatus.Location = New Point(666, 37)
+        lblConnectStatus.Location = New Point(483, 33)
         lblConnectStatus.Name = "lblConnectStatus"
         lblConnectStatus.Size = New Size(84, 15)
         lblConnectStatus.TabIndex = 7
@@ -123,11 +129,11 @@ Partial Class Form1
         ' 
         ' btnJSON
         ' 
-        btnJSON.Location = New Point(630, 363)
+        btnJSON.Location = New Point(271, 363)
         btnJSON.Name = "btnJSON"
-        btnJSON.Size = New Size(120, 36)
+        btnJSON.Size = New Size(133, 36)
         btnJSON.TabIndex = 5
-        btnJSON.Text = "Test JSON"
+        btnJSON.Text = "JSON Snapshot"
         btnJSON.UseVisualStyleBackColor = True
         ' 
         ' ttSnapShot
@@ -136,7 +142,7 @@ Partial Class Form1
         ' 
         ' txtJSON
         ' 
-        txtJSON.Location = New Point(1339, 55)
+        txtJSON.Location = New Point(659, 37)
         txtJSON.Multiline = True
         txtJSON.Name = "txtJSON"
         txtJSON.ReadOnly = True
@@ -148,18 +154,82 @@ Partial Class Form1
         clstCOMports.FormattingEnabled = True
         clstCOMports.Location = New Point(31, 321)
         clstCOMports.Name = "clstCOMports"
-        clstCOMports.Size = New Size(407, 166)
+        clstCOMports.Size = New Size(230, 166)
         clstCOMports.TabIndex = 9
         ' 
         ' TimerSerialUpdate
         ' 
         TimerSerialUpdate.Interval = 1000
         ' 
+        ' chkUpdateLists
+        ' 
+        chkUpdateLists.AutoSize = True
+        chkUpdateLists.Location = New Point(1074, 15)
+        chkUpdateLists.Name = "chkUpdateLists"
+        chkUpdateLists.Size = New Size(131, 19)
+        chkUpdateLists.TabIndex = 10
+        chkUpdateLists.Text = "continuous updates"
+        chkUpdateLists.UseVisualStyleBackColor = True
+        ' 
+        ' btnNetworkSupport
+        ' 
+        btnNetworkSupport.Location = New Point(434, 321)
+        btnNetworkSupport.Name = "btnNetworkSupport"
+        btnNetworkSupport.Size = New Size(133, 36)
+        btnNetworkSupport.TabIndex = 11
+        btnNetworkSupport.Text = "How to setup network"
+        btnNetworkSupport.UseVisualStyleBackColor = True
+        ' 
+        ' txtNetworkSetup
+        ' 
+        txtNetworkSetup.BackColor = SystemColors.Control
+        txtNetworkSetup.Location = New Point(31, 524)
+        txtNetworkSetup.Multiline = True
+        txtNetworkSetup.Name = "txtNetworkSetup"
+        txtNetworkSetup.Size = New Size(622, 100)
+        txtNetworkSetup.TabIndex = 12
+        txtNetworkSetup.Visible = False
+        ' 
+        ' lblNetWorkSetup
+        ' 
+        lblNetWorkSetup.AutoSize = True
+        lblNetWorkSetup.Location = New Point(31, 506)
+        lblNetWorkSetup.Name = "lblNetWorkSetup"
+        lblNetWorkSetup.Size = New Size(272, 15)
+        lblNetWorkSetup.TabIndex = 13
+        lblNetWorkSetup.Text = "Try the following commands in ADMIN cmd-shell:"
+        lblNetWorkSetup.Visible = False
+        ' 
+        ' bntFormSize
+        ' 
+        bntFormSize.Location = New Point(434, 363)
+        bntFormSize.Name = "bntFormSize"
+        bntFormSize.Size = New Size(133, 36)
+        bntFormSize.TabIndex = 14
+        bntFormSize.Text = "window small/large"
+        bntFormSize.UseVisualStyleBackColor = True
+        ' 
+        ' lnkLabelServer
+        ' 
+        lnkLabelServer.AutoSize = True
+        lnkLabelServer.Location = New Point(276, 456)
+        lnkLabelServer.Name = "lnkLabelServer"
+        lnkLabelServer.Size = New Size(43, 15)
+        lnkLabelServer.TabIndex = 15
+        lnkLabelServer.TabStop = True
+        lnkLabelServer.Text = "not set"
+        ' 
         ' Form1
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(1813, 972)
+        ClientSize = New Size(1604, 886)
+        Controls.Add(lnkLabelServer)
+        Controls.Add(bntFormSize)
+        Controls.Add(lblNetWorkSetup)
+        Controls.Add(txtNetworkSetup)
+        Controls.Add(btnNetworkSupport)
+        Controls.Add(chkUpdateLists)
         Controls.Add(clstCOMports)
         Controls.Add(txtJSON)
         Controls.Add(lblConnectStatus)
@@ -174,6 +244,7 @@ Partial Class Form1
         Controls.Add(btnPipeStop)
         FormBorderStyle = FormBorderStyle.FixedSingle
         MaximizeBox = False
+        MaximumSize = New Size(1620, 1024)
         Name = "Form1"
         Text = "LS22 Telemetry Server"
         ResumeLayout(False)
@@ -194,6 +265,12 @@ Partial Class Form1
     Friend WithEvents clstCOMports As CheckedListBox
     Friend WithEvents TimerSerialUpdate As Timer
     Friend WithEvents ToolTipPortFilters As ToolTip
+    Friend WithEvents chkUpdateLists As CheckBox
+    Friend WithEvents btnNetworkSupport As Button
+    Friend WithEvents txtNetworkSetup As TextBox
+    Friend WithEvents lblNetWorkSetup As Label
+    Friend WithEvents bntFormSize As Button
+    Friend WithEvents lnkLabelServer As LinkLabel
 
 
 End Class
