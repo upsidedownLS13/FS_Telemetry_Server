@@ -127,7 +127,6 @@ Public Class Form1
     Sub processHeader(ByRef items() As String)
         If items.Length > 1 Then
             headerList.Clear()
-            '_headers = items.Clone() 'do I need this at all?
 
             For cntItems = 1 To items.Length - 1
                 If items(cntItems).Length > 0 Then
@@ -284,9 +283,6 @@ Public Class Form1
                                 newStr &= """" & splits(cnt2) & """"
                             End If
 
-
-
-
                             If cnt2 < splits.Count - 2 Then
                                 newStr &= ","
                             End If
@@ -305,8 +301,6 @@ Public Class Form1
             End SyncLock
         End SyncLock
 
-
-
         _JSON = newStr.Clone
 
     End Sub
@@ -319,7 +313,6 @@ Public Class Form1
             v = String.Copy(_JSON)
 #Enable Warning BC40000 ' Type or member is obsolete
             returnStr = v
-            'returnStr = _JSON.Clone
         End SyncLock
         Return returnStr
     End Function
@@ -354,7 +347,11 @@ Public Class Form1
                                                            Dim textResponse As Byte() = System.Text.Encoding.UTF8.GetBytes(GetJSON())
 
                                                            response.ContentLength64 = textResponse.Length
-                                                           response.OutputStream.Write(textResponse, 0, textResponse.Length)
+                                                           Try
+                                                               response.OutputStream.Write(textResponse, 0, textResponse.Length)
+                                                           Catch
+                                                           End Try
+
                                                            response.OutputStream.Close()
                                                        Loop
                                                    End Sub)
@@ -670,8 +667,6 @@ Public Class Form1
                 If Not portFilters(portName).Contains(keyStr) Then
                     portFilters(portName).Add(keyStr)
                 End If
-
-                'TODO: make filters somehow visible on Form
             End If
         End If
 

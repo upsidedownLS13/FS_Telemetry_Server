@@ -195,7 +195,7 @@ Partial Class Form1
         lblNetWorkSetup.AutoSize = True
         lblNetWorkSetup.Location = New Point(31, 506)
         lblNetWorkSetup.Name = "lblNetWorkSetup"
-        lblNetWorkSetup.Size = New Size(272, 15)
+        lblNetWorkSetup.Size = New Size(273, 15)
         lblNetWorkSetup.TabIndex = 13
         lblNetWorkSetup.Text = "Try the following commands in ADMIN cmd-shell:"
         lblNetWorkSetup.Visible = False
@@ -246,7 +246,7 @@ Partial Class Form1
         MaximizeBox = False
         MaximumSize = New Size(1620, 1024)
         Name = "Form1"
-        Text = "LS22 Telemetry Server"
+        Text = "LS22/25 Telemetry Server"
         ResumeLayout(False)
         PerformLayout()
     End Sub
